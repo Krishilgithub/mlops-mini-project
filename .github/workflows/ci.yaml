@@ -13,6 +13,17 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      - name: Caching Pip Dependencies
+        uses: actions/cache@v3
+        with:
+            path: |
+              ~/.cache/pip
+              .dvc/cache
+            key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}-${{ hashFiles('.dvc/config') }}
+            restore-keys: |
+              ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+              ${{ runner.os }}-pip-
+              ${{ runner.os }}-
 
       - name: Install dependencies
         run: |
