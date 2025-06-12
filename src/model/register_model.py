@@ -4,23 +4,23 @@ import logging
 import os
 import dagshub
 
-dagshub.init(repo_owner='Krishilgithub', repo_name='mlops-mini-project', mlflow=True)
-mlflow.set_tracking_uri('https://dagshub.com/Krishilgithub/mlops-mini-project.mlflow')
+# dagshub.init(repo_owner='Krishilgithub', repo_name='mlops-mini-project', mlflow=True)
+# mlflow.set_tracking_uri('https://dagshub.com/Krishilgithub/mlops-mini-project.mlflow')
 
 # Set up DagsHub credentials for MLflow tracking
-# dagshub_token = os.getenv("DAGSHUB_PAT")
-# if not dagshub_token:
-#     raise EnvironmentError("DAGSHUB_PAT environment variable is not set")
+dagshub_token = os.getenv("DAGSHUB_PAT")
+if not dagshub_token:
+    raise EnvironmentError("DAGSHUB_PAT environment variable is not set")
 
-# os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
-# os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
-# dagshub_url = "https://dagshub.com"
-# repo_owner = "campusx-official"
-# repo_name = "mlops-mini-project"
+dagshub_url = "https://dagshub.com"
+repo_owner = "Krishilgithub"
+repo_name = "mlops-mini-project"
 
-# # Set up MLflow tracking URI
-# mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+# Set up MLflow tracking URI
+mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 
 
 # logging configuration
