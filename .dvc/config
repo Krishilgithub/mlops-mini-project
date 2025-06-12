@@ -1,4 +1,4 @@
 [core]
     remote = myremote
 ['remote "myremote"']
-    url = C:\Users\KKBROTHERS\AppData\local\Temp
+    url = s3://krishil-mlops-mini-project-bucket

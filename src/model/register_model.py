@@ -1,18 +1,29 @@
-# register_model.py
-#! Do model registry in aws and also see why model registry stage is not created in mlflow ui/server
-#! Refer to chat https://chatgpt.com/share/684a7778-19c4-8012-bf88-34e179ecfc7c
-
 import json
 import mlflow
 import logging
 import os
 import dagshub
 
-# Initialize DagsHub and MLflow tracking
 dagshub.init(repo_owner='Krishilgithub', repo_name='mlops-mini-project', mlflow=True)
 mlflow.set_tracking_uri('https://dagshub.com/Krishilgithub/mlops-mini-project.mlflow')
 
-# Logging configuration
+# Set up DagsHub credentials for MLflow tracking
+# dagshub_token = os.getenv("DAGSHUB_PAT")
+# if not dagshub_token:
+#     raise EnvironmentError("DAGSHUB_PAT environment variable is not set")
+
+# os.environ["MLFLOW_TRACKING_USERNAME"] = dagshub_token
+# os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
+
+# dagshub_url = "https://dagshub.com"
+# repo_owner = "campusx-official"
+# repo_name = "mlops-mini-project"
+
+# # Set up MLflow tracking URI
+# mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
+
+
+# logging configuration
 logger = logging.getLogger('model_registration')
 logger.setLevel('DEBUG')
 
@@ -44,23 +55,24 @@ def load_model_info(file_path: str) -> dict:
         raise
 
 def register_model(model_name: str, model_info: dict):
-    """
-    Simulate model registration by logging the model URI as an artifact.
-    This avoids using MLflow's Model Registry which is not supported on DagsHub.
-    """
+    """Register the model to the MLflow Model Registry."""
     try:
-        model_uri = f"runs:/{model_info['run_id']}/{model_info['model_path']}"
-        logger.debug(f"Simulating registration of model at URI: {model_uri}")
+        model_uri = f"mlruns:/{model_info['run_id']}/{model_info['model_path']}"
         
-        # Save the model URI to a text file and log it as an artifact
-        uri_path = f"reports/{model_name}_uri.txt"
-        with open(uri_path, "w") as f:
-            f.write(model_uri)
-
-        mlflow.log_artifact(uri_path)
-        logger.debug(f'Model "{model_name}" URI saved and logged as artifact.')
+        # Register the model
+        model_version = mlflow.register_model(model_uri, model_name)
+        
+        # Transition the model to "Staging" stage
+        client = mlflow.tracking.MlflowClient()
+        client.transition_model_version_stage(
+            name=model_name,
+            version=model_version.version,
+            stage="Staging"
+        )
+        
+        logger.debug(f'Model {model_name} version {model_version.version} registered and transitioned to Staging.')
     except Exception as e:
-        logger.error('Error during simulated model registration: %s', e)
+        logger.error('Error during model registration: %s', e)
         raise
 
 def main():
