@@ -36,6 +36,10 @@ jobs:
         run: |
           dvc repro
 
+      - name: Check Dagshub MLflow Server
+        run: |
+          curl -u $DAGSHUB_PAT:$DAGSHUB_PAT -I https://dagshub.com/Krishilgithub/mlops-mini-project.mlflow/api/2.0/mlflow/experiments/list
+
       - name: Run model tests
         env:
           DAGSHUB_PAT: ${{ secrets.DAGSHUB_PAT }}
