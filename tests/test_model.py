@@ -32,7 +32,7 @@ class TestModelLoading(unittest.TestCase):
             raise RuntimeError(f"No version found for model {cls.new_model_name} 🚫")
 
         cls.new_model_uri = f'models:/{cls.new_model_name}/{cls.new_model_version}'
-        try:
+        try:            #! having error in this line while testing
             cls.new_model = mlflow.pyfunc.load_model(cls.new_model_uri)
         except MlflowException as e:
             raise RuntimeError(f"Failed to load model from {cls.new_model_uri}: {e} 😢")
